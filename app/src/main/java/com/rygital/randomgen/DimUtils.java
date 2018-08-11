@@ -1,8 +1,6 @@
 package com.rygital.randomgen;
 
 import android.content.Context;
-import android.content.res.Resources;
-import android.os.Parcelable;
 import android.util.Log;
 
 public class DimUtils {
@@ -30,11 +28,11 @@ public class DimUtils {
     public static final int MATERIAL_SIZE = 10;//dp
     public static final int TOOLBAR_SIZE = 56;//dp
 
-    public Material getMaterial(int row, int column) {
+    public Rectangle getMaterial(int row, int column) {
         int pxSize = (int)dpToPx(context, MATERIAL_SIZE);
         int left = column * pxSize;
         int top = row * pxSize;
-        return new Material(left, left+pxSize, top, top+pxSize);
+        return new Rectangle(left, left+pxSize, top, top+pxSize);
     }
 
     public Cell getClickedCell(int x, int y) {

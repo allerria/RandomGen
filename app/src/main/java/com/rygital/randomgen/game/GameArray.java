@@ -9,12 +9,19 @@ import android.view.SurfaceHolder;
 import com.rygital.randomgen.App;
 import com.rygital.randomgen.Cell;
 import com.rygital.randomgen.DimUtils;
-import com.rygital.randomgen.Material;
+import com.rygital.randomgen.Rectangle;
 import com.rygital.randomgen.utils.Colors;
 import com.rygital.randomgen.utils.Materials;
 
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
+
+import static com.rygital.randomgen.utils.Materials.GRASS;
+import static com.rygital.randomgen.utils.Materials.LAVA;
+import static com.rygital.randomgen.utils.Materials.MUD;
+import static com.rygital.randomgen.utils.Materials.SAND;
+import static com.rygital.randomgen.utils.Materials.STONE;
+import static com.rygital.randomgen.utils.Materials.WATER;
 
 public class GameArray {
     public int columnCount;
@@ -23,7 +30,7 @@ public class GameArray {
     private Canvas canvas;
     private Paint paint;
 
-    private Integer[][] drawableObjectsArray;
+    private Integer[][] objects;
 
     private boolean running = false;
 
@@ -48,14 +55,26 @@ public class GameArray {
         DimUtils dimUtils = App.instance.dimUtils;
         columnCount = dimUtils.getColumnCount();
         rowCount = dimUtils.getRowCount();
-        drawableObjectsArray = new Integer[columnCount][rowCount];
+        objects = new Integer[columnCount][rowCount];
 
         random = new Random();
 
 
-        drawableObjectsArray[1][0] = 1;
-        drawableObjectsArray[1][2] = 1;
-        drawableObjectsArray[3][2] = 1;
+        objects[1][0] = MUD;
+        objects[1][2] = MUD;
+        objects[1][3] = MUD;
+        objects[1][4] = MUD;
+        objects[2][1] = MUD;
+        objects[2][2] = MUD;
+        objects[3][2] = MUD;
+        objects[4][2] = MUD;
+        objects[5][2] = MUD;
+        objects[6][2] = MUD;
+        objects[2][3] = MUD;
+        objects[3][3] = MUD;
+        objects[4][3] = MUD;
+        objects[5][3] = MUD;
+        objects[6][3] = MUD;
     }
 
     public void runMainLoop() {
@@ -91,17 +110,44 @@ public class GameArray {
         for (int j = rowCount - 1; j > 0; j--) {
             for (int i = 0; i < columnCount; i++) {
                 moveDown(i, j);
+                changeState(i, j);
             }
         }
     }
 
     private void moveDown(int i, int j) {
-        if (j - 1 >= 0 && drawableObjectsArray[i][j] == null && drawableObjectsArray[i][j - 1] != null) {
+        if (j - 1 >= 0 && objects[i][j] == null && objects[i][j - 1] != null) {
 
             //Log.d("Update", i + " " + j);
 
-            drawableObjectsArray[i][j] = drawableObjectsArray[i][j - 1];
-            drawableObjectsArray[i][j - 1] = null;
+            objects[i][j] = objects[i][j - 1];
+            objects[i][j - 1] = null;
+        }
+    }
+
+    private void changeState(int i, int j) {
+        if (i - 1 > 0) state(i - 1, j, i, j);
+        if (i + 1 < columnCount - 1) state(i + 1, j, i, j);
+        if (j - 1 > 0) state(i,j - 1, i, j);
+        if (j + 1 < rowCount - 1) state(i, j + 1, i, j);
+    }
+
+    private void state(int i, int j, int i1, int j1) {
+        if (objects[i][j] != null && objects[i1][j1] != null) {
+            if ((objects[i][j] == MUD || objects[i][j] == WATER || objects[i][j] == SAND) && objects[i1][j1] == LAVA) {
+                objects[i][j] = STONE;
+                objects[i1][j1] = STONE;
+            }
+
+            if (objects[i][j] == GRASS && objects[i1][j1] == LAVA) {
+                objects[i][j] = LAVA;
+                objects[i1][j1] = LAVA;
+            }
+
+            if (objects[i][j] == SAND && objects[i1][j1] == WATER) {
+                objects[i][j] = MUD;
+                objects[i1][j1] = MUD;
+            }
         }
     }
 
@@ -109,10 +155,9 @@ public class GameArray {
         canvas.drawColor(Colors.lightBlue);
         for (int i = 0; i < columnCount; i++) {
             for (int j = 0; j < rowCount; j++) {
-                if (drawableObjectsArray[i][j] != null) {
+                if (objects[i][j] != null) {
                     setColor(i, j);
-                    Material m = App.instance.dimUtils.getMaterial(j, i);
-                    //Log.d("TAG draw", String.format("%s %s %s %s", m.left, m.top, m.right, m.bottom));
+                    Rectangle m = App.instance.dimUtils.getMaterial(j, i);
                     canvas.drawRect(m.left, m.top, m.right, m.bottom, paint);
                 }
             }
@@ -120,7 +165,7 @@ public class GameArray {
     }
 
     private void setColor(int i, int j) {
-        paint.setColor(Materials.COLORS[drawableObjectsArray[i][j]][random.nextInt(2) + 1]);
+        paint.setColor(Materials.COLORS[objects[i][j]][random.nextInt(2) + 1]);
     }
 
     public void touch(int x, int y, int action) {
@@ -157,8 +202,8 @@ public class GameArray {
     }
 
     public void createObject(int posX, int posY) {
-        if (posX < columnCount && posY < rowCount && drawableObjectsArray[posX][posY] == null) {
-            drawableObjectsArray[posX][posY] = currentMaterialType;
+        if (posX < columnCount && posY < rowCount && objects[posX][posY] == null) {
+            objects[posX][posY] = currentMaterialType;
         }
     }
 
