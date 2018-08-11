@@ -1,13 +1,13 @@
 package com.rygital.randomgen.game;
 
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.Log;
 import android.view.SurfaceHolder;
 
-import com.rygital.randomgen.model.DrawableObject;
-import com.rygital.randomgen.model.Material;
+import com.rygital.randomgen.utils.Colors;
+
+import java.util.concurrent.TimeUnit;
 
 public class GameArray {
     public static final int SIZE_X = 100;
@@ -20,7 +20,6 @@ public class GameArray {
 
     private Integer[][] drawableObjectsArray = new Integer[SIZE_X][SIZE_Y];
 
-
     private boolean running = false;
 
     private SurfaceHolder surfaceHolder;
@@ -30,11 +29,14 @@ public class GameArray {
 
         paint = new Paint();
 
-        drawableObjectsArray[0][0] = 1;
+        drawableObjectsArray[4][0] = 1;
     }
 
-    public void init() {
+    public void runMainLoop() {
+
+
         while (running) {
+            long time = System.currentTimeMillis();
 
             canvas = null;
             try {
@@ -48,35 +50,44 @@ public class GameArray {
                 if (canvas != null) {
                     surfaceHolder.unlockCanvasAndPost(canvas);
                 }
-            }
-        }
-    }
 
-    public void update() {
-        Log.d("TAG", "update!");
-
-        for (int i = SIZE_X - 1; i >= 0; i--) {
-            for (int j = SIZE_Y - 1; j >= 0; j--) {
-                if (drawableObjectsArray[i][j] != null) {
-                    drawableObjectsArray[i][j - 1] = drawableObjectsArray[i][j];
-                    drawableObjectsArray[i][j] = null;
-                    // update object
+                long lastTime = System.currentTimeMillis();
+                if (lastTime - time < 16) {
+                    Log.d("TAG", "time: " + (lastTime - time));
+                    try {
+                        TimeUnit.MILLISECONDS.sleep(lastTime - time);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
     }
 
-    public void render() {
-        Log.d("TAG", "render!");
-        paint.setColor(Color.RED);
+    private void update() {
+        for (int j = SIZE_Y - 1; j > 0; j--) {
+            for (int i = 0; i < SIZE_X; i++) {
+                moveDown(i, j);
+            }
+        }
+    }
 
-        canvas.drawColor(Color.GREEN);
+    private void moveDown(int i, int j) {
+        if (j - 1 >= 0 && drawableObjectsArray[i][j] == null && drawableObjectsArray[i][j - 1] != null) {
+            drawableObjectsArray[i][j] = drawableObjectsArray[i][j - 1];
+            drawableObjectsArray[i][j - 1] = null;
+        }
+    }
+
+    private void render() {
+        paint.setColor(Colors.yellow);
+
+        canvas.drawColor(Colors.lightBlue);
 
         for (int i = 0; i < SIZE_X; i++) {
             for (int j = 0; j < SIZE_Y; j++) {
                 if (drawableObjectsArray[i][j] != null) {
-                    canvas.drawRect(i*rectSize, j*rectSize, rectSize + i*rectSize, rectSize + j*rectSize, paint);
-                    // draw
+                    canvas.drawRect(i, j, rectSize + i, rectSize + j, paint);
                 }
             }
         }
