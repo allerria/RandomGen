@@ -11,6 +11,10 @@ import com.rygital.randomgen.Cell;
 import com.rygital.randomgen.DimUtils;
 import com.rygital.randomgen.Material;
 import com.rygital.randomgen.utils.Colors;
+import com.rygital.randomgen.utils.Materials;
+
+import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 public class GameArray {
     public int columnCount;
@@ -30,7 +34,11 @@ public class GameArray {
 
     private long lastTouchedTime = 0;
 
-    private int currentMaterialType = 0;
+    private int currentMaterialType = 2;
+
+    private final int FRAME_TIME = 32;
+
+    private Random random;
 
     public GameArray(SurfaceHolder surfaceHolder) {
         this.surfaceHolder = surfaceHolder;
@@ -41,6 +49,8 @@ public class GameArray {
         columnCount = dimUtils.getColumnCount();
         rowCount = dimUtils.getRowCount();
         drawableObjectsArray = new Integer[columnCount][rowCount];
+
+        random = new Random();
 
 
         drawableObjectsArray[1][0] = 1;
@@ -66,14 +76,14 @@ public class GameArray {
                 }
             }
 
-            long lastTime = System.currentTimeMillis();
-//            if (lastTime - time < 33) {
-//                try {
-//                    TimeUnit.MILLISECONDS.sleep(33 - (lastTime - time));
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//            }
+            long delta = System.currentTimeMillis() - time;
+            if (delta < FRAME_TIME) {
+                try {
+                    TimeUnit.MILLISECONDS.sleep(FRAME_TIME - delta);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
@@ -96,19 +106,21 @@ public class GameArray {
     }
 
     private void render() {
-        paint.setColor(Colors.yellow);
-
         canvas.drawColor(Colors.lightBlue);
-
         for (int i = 0; i < columnCount; i++) {
             for (int j = 0; j < rowCount; j++) {
                 if (drawableObjectsArray[i][j] != null) {
+                    setColor(i, j);
                     Material m = App.instance.dimUtils.getMaterial(j, i);
                     //Log.d("TAG draw", String.format("%s %s %s %s", m.left, m.top, m.right, m.bottom));
                     canvas.drawRect(m.left, m.top, m.right, m.bottom, paint);
                 }
             }
         }
+    }
+
+    private void setColor(int i, int j) {
+        paint.setColor(Materials.COLORS[drawableObjectsArray[i][j]][random.nextInt(2) + 1]);
     }
 
     public void touch(int x, int y, int action) {
