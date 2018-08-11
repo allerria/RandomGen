@@ -21,8 +21,8 @@ public class DimUtils {
 
         cellPxSize = (int)dpToPx(MATERIAL_SIZE);
 
-        rowCount = (int)pxToDp(height) / MATERIAL_SIZE - 1;
-        columnCount = (int)pxToDp(width) / MATERIAL_SIZE - 1;
+        rowCount = (int)pxToDp(height) / MATERIAL_SIZE;
+        columnCount = (int)pxToDp(width) / MATERIAL_SIZE;
         Log.d("DimUtils", String.format("row %s; column %s", rowCount, columnCount));
 
         toolbarPxWidth = (int)dpToPx(TOOLBAR_SIZE);
