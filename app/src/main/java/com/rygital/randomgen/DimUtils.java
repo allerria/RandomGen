@@ -20,19 +20,19 @@ public class DimUtils {
     public DimUtils(Context context, int height, int width) {
         this.context = context;
 
-        cellPxSize = (int)dpToPx(MATERIAL_SIZE);
+        cellPxSize = (int) dpToPx(MATERIAL_SIZE);
 
-        rowCount = (int)pxToDp(height) / MATERIAL_SIZE;
-        columnCount = (int)pxToDp(width) / MATERIAL_SIZE;
+        rowCount = (int) pxToDp(height) / MATERIAL_SIZE;
+        columnCount = (int) pxToDp(width) / MATERIAL_SIZE;
         Log.d("DimUtils", String.format("row %s; column %s", rowCount, columnCount));
 
-        toolbarPxWidth = (int)dpToPx(TOOLBAR_SIZE);
-        iconPxRadius = (int)dpToPx(ICON_SIZE/2);
+        toolbarPxWidth = (int) dpToPx(TOOLBAR_SIZE);
+        iconPxRadius = (int) dpToPx(ICON_SIZE / 2);
 
         iconCellHeight = height / points.length;
-        for (int i=0; i<points.length; i++) {
-            int y = iconCellHeight *i + height/(points.length*2);
-            points[i] = new Point(toolbarPxWidth/2, y);
+        for (int i = 0; i < points.length; i++) {
+            int y = iconCellHeight * i + height / (points.length * 2);
+            points[i] = new Point(toolbarPxWidth / 2, y);
         }
 
     }
@@ -40,6 +40,7 @@ public class DimUtils {
     public int getRowCount() {
         return rowCount;
     }
+
     public int getColumnCount() {
         return columnCount;
     }
@@ -51,25 +52,26 @@ public class DimUtils {
     public Rectangle getMaterial(int row, int column) {
         int left = column * cellPxSize + toolbarPxWidth;
         int top = row * cellPxSize;
-        return new Rectangle(left, left+cellPxSize, top, top+cellPxSize);
+        return new Rectangle(left, left + cellPxSize, top, top + cellPxSize);
     }
 
     public Point getIconCenter(int index) {
         return points[index];
     }
+
     public int getIconPxRadius() {
         return iconPxRadius;
     }
+
     public int getToolbarPxWidth() {
         return toolbarPxWidth;
     }
 
     public ClickEvent getClickEvent(int x, int y) {
-        x = x - toolbarPxWidth;
         if (y <= toolbarPxWidth) {
-            return new ClickEvent(y/iconCellHeight + 1);
+            return new ClickEvent(x / iconCellHeight + 1);
         } else {
-            return new ClickEvent(x / cellPxSize, y / cellPxSize);
+            return new ClickEvent(x / cellPxSize, (y - toolbarPxWidth) / cellPxSize);
         }
     }
 
