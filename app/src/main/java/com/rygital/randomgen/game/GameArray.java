@@ -203,6 +203,11 @@ public class GameArray {
         canvas.drawRect(0, 0, width, canvas.getHeight(), paint);
 
         for (int i = 0; i < 6; i++) {
+            if (i + 1 == currentMaterialType) {
+                paint.setColor(Color.LTGRAY);
+                canvas.drawCircle(dimUtils.getIconCenter(i).x, dimUtils.getIconCenter(i).y,
+                        dimUtils.getIconPxRadius() + dimUtils.dpToPx(2), paint);
+            }
             paint.setColor(Materials.COLORS[i + 1][0]);
             canvas.drawCircle(dimUtils.getIconCenter(i).x, dimUtils.getIconCenter(i).y, dimUtils.getIconPxRadius(),
                     paint);
