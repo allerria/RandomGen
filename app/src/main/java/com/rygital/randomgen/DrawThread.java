@@ -17,6 +17,10 @@ class DrawThread extends Thread {
         game.setRunning(running);
     }
 
+    void touch(int x, int y, int action) {
+        game.touch(x, y, action);
+    }
+
     @Override
     public void run() {
         game.runMainLoop();

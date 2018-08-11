@@ -93,6 +93,10 @@ public class GameArray {
         }
     }
 
+    public void touch(int x, int y, int action) {
+
+    }
+
     public void setRunning(boolean running) {
         this.running = running;
     }

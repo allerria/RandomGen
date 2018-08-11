@@ -38,4 +38,8 @@ class DrawField extends SurfaceView implements SurfaceHolder.Callback {
             }
         }
     }
+
+    public void touch(int x, int y, int action) {
+        drawThread.touch(x, y, action);
+    }
 }
