@@ -1,7 +1,6 @@
 package com.rygital.randomgen;
 
 import android.content.Context;
-import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 

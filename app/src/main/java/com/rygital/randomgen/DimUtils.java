@@ -24,7 +24,7 @@ public class DimUtils {
         return columnCount;
     }
 
-    public static final int MATERIAL_SIZE = 5;//dp
+    public static final int MATERIAL_SIZE = 20;//dp
     public static final int TOOLBAR_SIZE = 56;//dp
 
     public Material getMaterial(int row, int column) {
@@ -45,20 +45,6 @@ public class DimUtils {
 
     public static float pxToDp(final Context context, final float px) {
         return px / context.getResources().getDisplayMetrics().density;
-    }
-}
-
-class Material {
-    int left;
-    int right;
-    int top;
-    int bottom;
-
-    public Material(int left, int right, int top, int bottom) {
-        this.left = left;
-        this.right = right;
-        this.top = top;
-        this.bottom = bottom;
     }
 }
 

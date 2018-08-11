@@ -6,20 +6,21 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 
+import com.rygital.randomgen.App;
+import com.rygital.randomgen.DimUtils;
+import com.rygital.randomgen.Material;
 import com.rygital.randomgen.utils.Colors;
 
 import java.util.concurrent.TimeUnit;
 
 public class GameArray {
-    public static final int SIZE_X = 100;
-    public static final int SIZE_Y = 100;
-
-    public static final int rectSize = 100;
+    public int columnCount = 100;
+    public int rowCount = 100;
 
     private Canvas canvas;
     private Paint paint;
 
-    private Integer[][] drawableObjectsArray = new Integer[SIZE_X][SIZE_Y];
+    private Integer[][] drawableObjectsArray;
 
     private boolean running = false;
 
@@ -30,12 +31,17 @@ public class GameArray {
 
         paint = new Paint();
 
-        drawableObjectsArray[4][0] = 1;
+        DimUtils dimUtils = App.instance.dimUtils;
+        columnCount = dimUtils.getColumnCount();
+        rowCount = dimUtils.getRowCount();
+        drawableObjectsArray = new Integer[columnCount][rowCount];
+
+
+
+        drawableObjectsArray[1][0] = 1;
     }
 
     public void runMainLoop() {
-
-
         while (running) {
             long time = System.currentTimeMillis();
 
@@ -51,23 +57,23 @@ public class GameArray {
                 if (canvas != null) {
                     surfaceHolder.unlockCanvasAndPost(canvas);
                 }
+            }
 
-                long lastTime = System.currentTimeMillis();
-                if (lastTime - time < 16) {
-                    //Log.d("TAG", "time: " + (lastTime - time));
-                    try {
-                        TimeUnit.MILLISECONDS.sleep(lastTime - time);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+            long lastTime = System.currentTimeMillis();
+            if (lastTime - time < 500) {
+                //Log.d("TAG", "time: " + (lastTime - time));
+                try {
+                    TimeUnit.MILLISECONDS.sleep(lastTime - time);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
         }
     }
 
     private void update() {
-        for (int j = SIZE_Y - 1; j > 0; j--) {
-            for (int i = 0; i < SIZE_X; i++) {
+        for (int j = rowCount - 1; j > 0; j--) {
+            for (int i = 0; i < columnCount; i++) {
                 moveDown(i, j);
             }
         }
@@ -75,6 +81,9 @@ public class GameArray {
 
     private void moveDown(int i, int j) {
         if (j - 1 >= 0 && drawableObjectsArray[i][j] == null && drawableObjectsArray[i][j - 1] != null) {
+
+            Log.d("Update", i + " " + j);
+
             drawableObjectsArray[i][j] = drawableObjectsArray[i][j - 1];
             drawableObjectsArray[i][j - 1] = null;
         }
@@ -85,10 +94,12 @@ public class GameArray {
 
         canvas.drawColor(Colors.lightBlue);
 
-        for (int i = 0; i < SIZE_X; i++) {
-            for (int j = 0; j < SIZE_Y; j++) {
+        for (int i = 0; i < columnCount; i++) {
+            for (int j = 0; j < rowCount; j++) {
                 if (drawableObjectsArray[i][j] != null) {
-                    canvas.drawRect(i, j, rectSize + i, rectSize + j, paint);
+                    Material m = App.instance.dimUtils.getMaterial(j, i);
+                    Log.d("TAG draw", String.format("%s %s %s %s", m.left, m.top, m.right, m.bottom));
+                    canvas.drawRect(m.left, m.top, m.right, m.bottom, paint);
                 }
             }
         }
