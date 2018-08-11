@@ -193,7 +193,7 @@ public class GameArray {
     }
 
     public void touch(int x, int y, int action) {
-        ClickEvent clickEvent = App.instance.dimUtils.getClickedCell(y, x);
+        ClickEvent clickEvent = App.instance.dimUtils.getClickEvent(y, x);
         Log.d("TAG", MotionEvent.actionToString(action));
         log(prevX, x, prevY, y);
         switch (action) {
@@ -204,7 +204,7 @@ public class GameArray {
             }
             case MotionEvent.ACTION_MOVE: {
                 if (clickEvent.clickType == ClickType.CREATE_MATERIAL_CLICK) {
-                    ClickEvent prevClickEvent = App.instance.dimUtils.getClickedCell(prevY, prevX);
+                    ClickEvent prevClickEvent = App.instance.dimUtils.getClickEvent(prevY, prevX);
                     prevY = y;
                     prevX = x;
                     log(prevClickEvent.column, clickEvent.column, prevClickEvent.row, clickEvent.row);
@@ -214,7 +214,7 @@ public class GameArray {
             }
             case MotionEvent.ACTION_UP: {
                 if (clickEvent.clickType == ClickType.CREATE_MATERIAL_CLICK) {
-                    ClickEvent prevClickEvent = App.instance.dimUtils.getClickedCell(prevY, prevX);
+                    ClickEvent prevClickEvent = App.instance.dimUtils.getClickEvent(prevY, prevX);
                     log(prevClickEvent.column, clickEvent.column, prevClickEvent.row, clickEvent.row);
                     createObjects(prevClickEvent.column, prevClickEvent.row, clickEvent.column, clickEvent.row);
                 } else {
