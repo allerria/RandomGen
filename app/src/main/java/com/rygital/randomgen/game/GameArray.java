@@ -43,7 +43,7 @@ public class GameArray {
 
     private long lastTouchedTime = 0;
 
-    private int currentMaterialType = 2;
+    private int currentMaterialType = 1;
 
     private final int FRAME_TIME = 32;
 
@@ -60,23 +60,6 @@ public class GameArray {
         objects = new Integer[columnCount][rowCount];
 
         random = new Random();
-
-
-        objects[1][0] = MUD;
-        objects[1][2] = MUD;
-        objects[1][3] = MUD;
-        objects[1][4] = MUD;
-        objects[2][1] = MUD;
-        objects[2][2] = MUD;
-        objects[3][2] = MUD;
-        objects[4][2] = MUD;
-        objects[5][2] = MUD;
-        objects[6][2] = MUD;
-        objects[2][3] = MUD;
-        objects[3][3] = MUD;
-        objects[4][3] = MUD;
-        objects[5][3] = MUD;
-        objects[6][3] = MUD;
     }
 
     public void runMainLoop() {
@@ -123,10 +106,21 @@ public class GameArray {
                 objects[i][j] = objects[i][j - 1];
                 objects[i][j - 1] = null;
             } else if (objects[i][j] != null && objects[i][j - 1] != null
-                    && (objects[i][j - 1] == STONE || objects[i][j - 1] == SAND)) {
+                    && (objects[i][j - 1] == STONE)) {
                 int type = objects[i][j];
                 objects[i][j] = objects[i][j - 1];
                 objects[i][j - 1] = type;
+            } else if (objects[i][j] != null
+                    && (objects[i][j] == WATER || objects[i][j] == LAVA || objects[i][j] == MUD)) {
+                if (i > 0 && i + 1 < columnCount - 1 && j < rowCount - 2) {
+                    if (objects[i - 1][j] == null && objects[i - 1][j + 1] == null) {
+                        objects[i - 1][j] = objects[i][j];
+                        objects[i][j] = null;
+                    } else if (objects[i + 1][j] == null && objects[i + 1][j + 1] == null) {
+                        objects[i + 1][j] = objects[i][j];
+                        objects[i][j] = null;
+                    }
+                }
             }
         }
     }
@@ -232,7 +226,7 @@ public class GameArray {
     }
 
     public void createObject(int posX, int posY) {
-        if (posX < columnCount && posY < rowCount && objects[posX][posY] == null) {
+        if (posX >= 0 && posY >= 0 && posX < columnCount && posY < rowCount && objects[posX][posY] == null) {
             objects[posX][posY] = currentMaterialType;
         }
     }
