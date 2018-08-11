@@ -62,8 +62,8 @@ public class DimUtils {
         return toolbarPxWidth;
     }
 
-    public Cell getClickedCell(int x, int y) {
-        return new Cell(x/cellPxSize, y/cellPxSize);
+    public ClickEvent getClickedCell(int x, int y) {
+        return new ClickEvent(x/cellPxSize, y/cellPxSize);
     }
 
     public float dpToPx(final float dp) {

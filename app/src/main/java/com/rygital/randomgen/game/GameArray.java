@@ -7,7 +7,7 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 
 import com.rygital.randomgen.App;
-import com.rygital.randomgen.Cell;
+import com.rygital.randomgen.ClickEvent;
 import com.rygital.randomgen.DimUtils;
 import com.rygital.randomgen.Rectangle;
 import com.rygital.randomgen.utils.Colors;
@@ -178,19 +178,19 @@ public class GameArray {
                 break;
             }
             case MotionEvent.ACTION_MOVE: {
-                Cell prevCell = App.instance.dimUtils.getClickedCell(prevY, prevX);
-                Cell cell = App.instance.dimUtils.getClickedCell(y, x);
+                ClickEvent prevClickEvent = App.instance.dimUtils.getClickedCell(prevY, prevX);
+                ClickEvent clickEvent = App.instance.dimUtils.getClickedCell(y, x);
                 prevY = y;
                 prevX = x;
-                log(prevCell.column, cell.column, prevCell.row, cell.row);
-                createObjects(prevCell.column, prevCell.row, cell.column, cell.row);
+                log(prevClickEvent.column, clickEvent.column, prevClickEvent.row, clickEvent.row);
+                createObjects(prevClickEvent.column, prevClickEvent.row, clickEvent.column, clickEvent.row);
                 break;
             }
             case MotionEvent.ACTION_UP: {
-                Cell prevCell = App.instance.dimUtils.getClickedCell(prevY, prevX);
-                Cell cell = App.instance.dimUtils.getClickedCell(y, x);
-                log(prevCell.column, cell.column, prevCell.row, cell.row);
-                createObjects(prevCell.column, prevCell.row, cell.column, cell.row);
+                ClickEvent prevClickEvent = App.instance.dimUtils.getClickedCell(prevY, prevX);
+                ClickEvent clickEvent = App.instance.dimUtils.getClickedCell(y, x);
+                log(prevClickEvent.column, clickEvent.column, prevClickEvent.row, clickEvent.row);
+                createObjects(prevClickEvent.column, prevClickEvent.row, clickEvent.column, clickEvent.row);
                 break;
             }
         }
