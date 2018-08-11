@@ -66,7 +66,7 @@ public class DimUtils {
 
     public ClickEvent getClickEvent(int x, int y) {
         x = x - toolbarPxWidth;
-        if (x <= toolbarPxWidth) {
+        if (y <= toolbarPxWidth) {
             return new ClickEvent(y/iconCellHeight + 1);
         } else {
             return new ClickEvent(x / cellPxSize, y / cellPxSize);
