@@ -3,6 +3,7 @@ package com.rygital.randomgen.game;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 
 import com.rygital.randomgen.utils.Colors;
@@ -53,7 +54,7 @@ public class GameArray {
 
                 long lastTime = System.currentTimeMillis();
                 if (lastTime - time < 16) {
-                    Log.d("TAG", "time: " + (lastTime - time));
+                    //Log.d("TAG", "time: " + (lastTime - time));
                     try {
                         TimeUnit.MILLISECONDS.sleep(lastTime - time);
                     } catch (InterruptedException e) {
@@ -94,7 +95,10 @@ public class GameArray {
     }
 
     public void touch(int x, int y, int action) {
+        switch (action) {
 
+        }
+        Log.d("TAG", String.valueOf(x) + " " + String.valueOf(y) + MotionEvent.actionToString(action));
     }
 
     public void setRunning(boolean running) {
