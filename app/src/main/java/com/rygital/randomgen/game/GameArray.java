@@ -21,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 import static com.rygital.randomgen.utils.Materials.GRASS;
 import static com.rygital.randomgen.utils.Materials.LAVA;
 import static com.rygital.randomgen.utils.Materials.MUD;
+import static com.rygital.randomgen.utils.Materials.OBSIDIAN;
 import static com.rygital.randomgen.utils.Materials.SAND;
 import static com.rygital.randomgen.utils.Materials.STONE;
 import static com.rygital.randomgen.utils.Materials.WATER;
@@ -102,15 +103,36 @@ public class GameArray {
 
     private void moveDown(int i, int j) {
         if (j - 1 >= 0) {
+//          just down if nothing
             if (objects[i][j] == null && objects[i][j - 1] != null) {
                 objects[i][j] = objects[i][j - 1];
                 objects[i][j - 1] = null;
-            } else if (objects[i][j] != null && objects[i][j - 1] != null
+
+            }
+//          stone down
+            else if (objects[i][j] != null && objects[i][j - 1] != null && objects[i][j] != OBSIDIAN
                     && (objects[i][j - 1] == STONE)) {
                 int type = objects[i][j];
                 objects[i][j] = objects[i][j - 1];
                 objects[i][j - 1] = type;
-            } else if (objects[i][j] != null
+
+            }
+//          obsidian down
+            else if (objects[i][j] != null && objects[i][j - 1] != null && objects[i][j] != STONE
+                    && (objects[i][j - 1] == OBSIDIAN)) {
+                int type = objects[i][j];
+                objects[i][j] = objects[i][j - 1];
+                objects[i][j - 1] = type;
+            }
+//          grass down
+//            else if (objects[i][j] != null && objects[i][j - 1] != null && objects[i][j] != GRASS
+//                    && (objects[i][j - 1] == WATER)) {
+//                int type = objects[i][j];
+//                objects[i][j] = objects[i][j - 1];
+//                objects[i][j - 1] = type;
+//            }
+//          liquid physics
+            else if (objects[i][j] != null
                     && (objects[i][j] == WATER || objects[i][j] == LAVA || objects[i][j] == MUD)) {
                 if (i > 0 && i + 1 < columnCount - 1 && j < rowCount - 2) {
                     if (objects[i - 1][j] == null && objects[i - 1][j + 1] == null) {
@@ -134,9 +156,14 @@ public class GameArray {
 
     private void state(int i, int j, int i1, int j1) {
         if (objects[i][j] != null && objects[i1][j1] != null) {
-            if ((objects[i][j] == MUD || objects[i][j] == WATER || objects[i][j] == SAND) && objects[i1][j1] == LAVA) {
+            if ((objects[i][j] == MUD || objects[i][j] == SAND) && objects[i1][j1] == LAVA) {
                 objects[i][j] = STONE;
                 objects[i1][j1] = STONE;
+            }
+
+            if (objects[i][j] == WATER && objects[i1][j1] == LAVA) {
+                objects[i][j] = OBSIDIAN;
+                objects[i1][j1] = OBSIDIAN;
             }
 
             if (objects[i][j] == GRASS && objects[i1][j1] == LAVA) {
