@@ -125,12 +125,12 @@ public class GameArray {
                 objects[i][j - 1] = type;
             }
 //          grass down
-//            else if (objects[i][j] != null && objects[i][j - 1] != null && objects[i][j] != GRASS
-//                    && (objects[i][j - 1] == WATER)) {
-//                int type = objects[i][j];
-//                objects[i][j] = objects[i][j - 1];
-//                objects[i][j - 1] = type;
-//            }
+            else if (objects[i][j] != null && objects[i][j - 1] != null && objects[i][j] == WATER
+                    && (objects[i][j - 1] == GRASS)) {
+                int type = objects[i][j];
+                objects[i][j] = objects[i][j - 1];
+                objects[i][j - 1] = type;
+            }
 //          liquid physics
             else if (objects[i][j] != null
                     && (objects[i][j] == WATER || objects[i][j] == LAVA || objects[i][j] == MUD)) {
