@@ -1,6 +1,7 @@
 package com.rygital.randomgen.game;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -116,12 +117,15 @@ public class GameArray {
     }
 
     private void moveDown(int i, int j) {
-        if (j - 1 >= 0 && objects[i][j] == null && objects[i][j - 1] != null) {
-
-            //Log.d("Update", i + " " + j);
-
-            objects[i][j] = objects[i][j - 1];
-            objects[i][j - 1] = null;
+        if (j - 1 >= 0) {
+            if (objects[i][j] == null && objects[i][j - 1] != null) {
+                objects[i][j] = objects[i][j - 1];
+                objects[i][j - 1] = null;
+            } /*else if (objects[i][j] != null && objects[i][j - 1] == STONE) {
+                int type = objects[i][j];
+                objects[i][j] = objects[i][j - 1];
+                objects[i][j - 1] = type;
+            }*/
         }
     }
 
@@ -153,6 +157,9 @@ public class GameArray {
 
     private void render() {
         canvas.drawColor(Colors.lightBlue);
+
+        drawToolbar();
+
         for (int i = 0; i < columnCount; i++) {
             for (int j = 0; j < rowCount; j++) {
                 if (objects[i][j] != null) {
@@ -162,6 +169,22 @@ public class GameArray {
                 }
             }
         }
+    }
+
+    private void drawToolbar() {
+        DimUtils dimUtils = App.instance.dimUtils;
+
+        int width = dimUtils.getToolbarPxWidth();
+
+        paint.setColor(Color.DKGRAY);
+        canvas.drawRect(0, 0, width, canvas.getHeight(), paint);
+
+        for (int i = 0; i < 6; i++) {
+            paint.setColor(Materials.COLORS[i + 1][0]);
+            canvas.drawCircle(dimUtils.getIconCenter(i).x, dimUtils.getIconCenter(i).y, dimUtils.getIconPxRadius(),
+                    paint);
+        }
+
     }
 
     private void setColor(int i, int j) {
