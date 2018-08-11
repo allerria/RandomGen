@@ -61,9 +61,8 @@ public class GameArray {
 
             long lastTime = System.currentTimeMillis();
             if (lastTime - time < 500) {
-                //Log.d("TAG", "time: " + (lastTime - time));
                 try {
-                    TimeUnit.MILLISECONDS.sleep(lastTime - time);
+                    TimeUnit.MILLISECONDS.sleep(500 - (lastTime - time));
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
