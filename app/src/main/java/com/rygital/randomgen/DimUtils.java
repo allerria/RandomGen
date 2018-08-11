@@ -15,6 +15,7 @@ public class DimUtils {
     private int toolbarPxWidth;
     private int iconPxRadius;
     private Point[] points = new Point[6];
+    int iconCellHeight;
 
     public DimUtils(Context context, int height, int width) {
         this.context = context;
@@ -28,8 +29,9 @@ public class DimUtils {
         toolbarPxWidth = (int)dpToPx(TOOLBAR_SIZE);
         iconPxRadius = (int)dpToPx(ICON_SIZE/2);
 
+        iconCellHeight = height / points.length;
         for (int i=0; i<points.length; i++) {
-            int y = height/points.length*i + height/(points.length*2);
+            int y = iconCellHeight *i + height/(points.length*2);
             points[i] = new Point(toolbarPxWidth/2, y);
         }
 
@@ -62,8 +64,13 @@ public class DimUtils {
         return toolbarPxWidth;
     }
 
-    public ClickEvent getClickedCell(int x, int y) {
-        return new ClickEvent(x/cellPxSize, y/cellPxSize);
+    public ClickEvent getClickEvent(int x, int y) {
+        x = x - toolbarPxWidth;
+        if (x <= toolbarPxWidth) {
+            return new ClickEvent(y/iconCellHeight + 1);
+        } else {
+            return new ClickEvent(x / cellPxSize, y / cellPxSize);
+        }
     }
 
     public float dpToPx(final float dp) {
