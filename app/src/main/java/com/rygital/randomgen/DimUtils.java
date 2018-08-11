@@ -2,6 +2,7 @@ package com.rygital.randomgen;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.os.Parcelable;
 
 public class DimUtils {
 
@@ -33,6 +34,11 @@ public class DimUtils {
         return new Material(left, left+pxSize, top, top+pxSize);
     }
 
+    public Cell getClickedCell(int x, int y) {
+        int pxSize = (int)dpToPx(context, MATERIAL_SIZE);
+        return new Cell(x/pxSize, y/pxSize);
+    }
+
     public static float dpToPx(final Context context, final float dp) {
         return dp * context.getResources().getDisplayMetrics().density;
     }
@@ -53,5 +59,15 @@ class Material {
         this.right = right;
         this.top = top;
         this.bottom = bottom;
+    }
+}
+
+class Cell {
+    int row;
+    int column;
+
+    public Cell(int row, int column) {
+        this.row = row;
+        this.column = column;
     }
 }
