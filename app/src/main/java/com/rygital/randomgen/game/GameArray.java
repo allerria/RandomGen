@@ -122,11 +122,12 @@ public class GameArray {
             if (objects[i][j] == null && objects[i][j - 1] != null) {
                 objects[i][j] = objects[i][j - 1];
                 objects[i][j - 1] = null;
-            } /*else if (objects[i][j] != null && objects[i][j - 1] == STONE) {
+            } else if (objects[i][j] != null && objects[i][j - 1] != null
+                    && (objects[i][j - 1] == STONE || objects[i][j - 1] == SAND)) {
                 int type = objects[i][j];
                 objects[i][j] = objects[i][j - 1];
                 objects[i][j - 1] = type;
-            }*/
+            }
         }
     }
 
