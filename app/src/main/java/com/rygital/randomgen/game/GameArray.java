@@ -1,6 +1,5 @@
 package com.rygital.randomgen.game;
 
-import android.app.Application;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.Log;
@@ -12,8 +11,6 @@ import com.rygital.randomgen.Cell;
 import com.rygital.randomgen.DimUtils;
 import com.rygital.randomgen.Material;
 import com.rygital.randomgen.utils.Colors;
-
-import java.util.concurrent.TimeUnit;
 
 public class GameArray {
     public int columnCount;
@@ -28,8 +25,9 @@ public class GameArray {
 
     private SurfaceHolder surfaceHolder;
 
-    private int prevTouchedX = 0;
-    private int prevTouchedY = 0;
+    private int prevX = 0;
+    private int prevY = 0;
+
     private long lastTouchedTime = 0;
 
     private int currentMaterialType = 0;
@@ -69,13 +67,13 @@ public class GameArray {
             }
 
             long lastTime = System.currentTimeMillis();
-            if (lastTime - time < 500) {
-                try {
-                    TimeUnit.MILLISECONDS.sleep(500 - (lastTime - time));
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
+//            if (lastTime - time < 33) {
+//                try {
+//                    TimeUnit.MILLISECONDS.sleep(33 - (lastTime - time));
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//            }
         }
     }
 
@@ -90,7 +88,7 @@ public class GameArray {
     private void moveDown(int i, int j) {
         if (j - 1 >= 0 && drawableObjectsArray[i][j] == null && drawableObjectsArray[i][j - 1] != null) {
 
-            Log.d("Update", i + " " + j);
+            //Log.d("Update", i + " " + j);
 
             drawableObjectsArray[i][j] = drawableObjectsArray[i][j - 1];
             drawableObjectsArray[i][j - 1] = null;
@@ -106,7 +104,7 @@ public class GameArray {
             for (int j = 0; j < rowCount; j++) {
                 if (drawableObjectsArray[i][j] != null) {
                     Material m = App.instance.dimUtils.getMaterial(j, i);
-                    Log.d("TAG draw", String.format("%s %s %s %s", m.left, m.top, m.right, m.bottom));
+                    //Log.d("TAG draw", String.format("%s %s %s %s", m.left, m.top, m.right, m.bottom));
                     canvas.drawRect(m.left, m.top, m.right, m.bottom, paint);
                 }
             }
@@ -115,24 +113,28 @@ public class GameArray {
 
     public void touch(int x, int y, int action) {
         Log.d("TAG", MotionEvent.actionToString(action));
+        log(prevX, x, prevY, y);
         switch (action) {
-            case MotionEvent.ACTION_MOVE: {
-//                if (System.currentTimeMillis() - lastTouchedTime > 16) {
-//                    break;
-//                }
-//                Log.d("TAG", String.valueOf(prevTouchedX) + " " + String.valueOf(x));
-//                Log.d("TAG", String.valueOf(prevTouchedY) + " " + String.valueOf(y));
-//                Cell prevCell = App.instance.dimUtils.getClickedCell(prevTouchedY, prevTouchedX);
-//                Cell cell = App.instance.dimUtils.getClickedCell(y, x);
-//                createObjects(prevCell.column, prevCell.row, cell.column, cell.row);
-                prevTouchedX = x;
-                prevTouchedY = y;
+            case MotionEvent.ACTION_DOWN: {
+                prevX = x;
+                prevY = y;
                 break;
             }
-            case MotionEvent.ACTION_DOWN: {
-                Log.d("TAG", String.valueOf(x) + " " + String.valueOf(y));
+            case MotionEvent.ACTION_MOVE: {
+                Cell prevCell = App.instance.dimUtils.getClickedCell(prevY, prevX);
                 Cell cell = App.instance.dimUtils.getClickedCell(y, x);
-                createObject(cell.column, cell.row);
+                prevY = y;
+                prevX = x;
+                log(prevCell.column, cell.column, prevCell.row, cell.row);
+                createObjects(prevCell.column, prevCell.row, cell.column, cell.row);
+                break;
+            }
+            case MotionEvent.ACTION_UP: {
+                Cell prevCell = App.instance.dimUtils.getClickedCell(prevY, prevX);
+                Cell cell = App.instance.dimUtils.getClickedCell(y, x);
+                log(prevCell.column, cell.column, prevCell.row, cell.row);
+                createObjects(prevCell.column, prevCell.row, cell.column, cell.row);
+                break;
             }
         }
         lastTouchedTime = System.currentTimeMillis();
@@ -143,12 +145,12 @@ public class GameArray {
     }
 
     public void createObject(int posX, int posY) {
-        if (drawableObjectsArray[posX][posY] == null) {
+        if (posX < columnCount && posY < rowCount && drawableObjectsArray[posX][posY] == null) {
             drawableObjectsArray[posX][posY] = currentMaterialType;
         }
     }
 
-    public void createObjects(int startPosX, int endPosX, int startPosY, int endPosY) {
+    public void createObjects(int startPosX, int startPosY, int endPosX, int endPosY) {
         if (startPosX > endPosX) {
             int tmp;
             tmp = startPosX;
@@ -163,10 +165,13 @@ public class GameArray {
         }
         int diffY = endPosY - startPosY + 1;
         int diffX = endPosX - startPosX + 1;
-        for (int posX = startPosX; posX < endPosX; posX++) {
-            int posY = ((int) ((double) (posX - startPosX) / diffX * diffY));
-
+        for (int posX = startPosX; posX <= endPosX; posX++) {
+            int posY = startPosY + ((int) ((double) (posX - startPosX) / diffX * diffY));
             createObject(posX, posY);
         }
+    }
+
+    private void log(int startX, int endX, int startY, int endY) {
+        Log.d("TAG", String.valueOf(startX) + " " + String.valueOf(endX) + " " + String.valueOf(startY) + " " + String.valueOf(endY));
     }
 }

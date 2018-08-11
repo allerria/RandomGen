@@ -14,8 +14,8 @@ public class DimUtils {
     public DimUtils(Context context, int height, int width) {
         this.context = context;
 
-        rowCount = (int)pxToDp(context, height) / MATERIAL_SIZE - 1;
-        columnCount = (int)pxToDp(context, width) / MATERIAL_SIZE - 1;
+        rowCount = (int)pxToDp(context, height) / MATERIAL_SIZE;
+        columnCount = (int)pxToDp(context, width) / MATERIAL_SIZE;
 
         Log.d("DimUtils", String.format("row %s; column %s", rowCount, columnCount));
     }
@@ -27,7 +27,7 @@ public class DimUtils {
         return columnCount;
     }
 
-    public static final int MATERIAL_SIZE = 20;//dp
+    public static final int MATERIAL_SIZE = 10;//dp
     public static final int TOOLBAR_SIZE = 56;//dp
 
     public Material getMaterial(int row, int column) {
