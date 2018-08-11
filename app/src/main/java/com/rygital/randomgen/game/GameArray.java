@@ -14,8 +14,8 @@ import com.rygital.randomgen.utils.Colors;
 import java.util.concurrent.TimeUnit;
 
 public class GameArray {
-    public int columnCount = 100;
-    public int rowCount = 100;
+    public int columnCount;
+    public int rowCount;
 
     private Canvas canvas;
     private Paint paint;
@@ -39,6 +39,8 @@ public class GameArray {
 
 
         drawableObjectsArray[1][0] = 1;
+        drawableObjectsArray[1][2] = 1;
+        drawableObjectsArray[3][2] = 1;
     }
 
     public void runMainLoop() {

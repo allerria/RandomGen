@@ -3,6 +3,7 @@ package com.rygital.randomgen;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Parcelable;
+import android.util.Log;
 
 public class DimUtils {
 
@@ -13,8 +14,10 @@ public class DimUtils {
     public DimUtils(Context context, int height, int width) {
         this.context = context;
 
-        rowCount = (int)pxToDp(context, height) / MATERIAL_SIZE;
-        columnCount = (int)pxToDp(context, width) / MATERIAL_SIZE;
+        rowCount = (int)pxToDp(context, height) / MATERIAL_SIZE - 1;
+        columnCount = (int)pxToDp(context, width) / MATERIAL_SIZE - 1;
+
+        Log.d("DimUtils", String.format("row %s; column %s", rowCount, columnCount));
     }
 
     public int getRowCount() {
