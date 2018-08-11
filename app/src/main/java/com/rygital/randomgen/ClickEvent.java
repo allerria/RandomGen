@@ -3,8 +3,8 @@ package com.rygital.randomgen;
 import com.rygital.randomgen.utils.ClickType;
 
 public class ClickEvent {
-    private int clickType;
-    private int materialType;
+    public int clickType;
+    public int materialType;
     public int row;
     public int column;
 

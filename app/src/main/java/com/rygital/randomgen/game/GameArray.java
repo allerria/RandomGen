@@ -11,6 +11,7 @@ import com.rygital.randomgen.App;
 import com.rygital.randomgen.ClickEvent;
 import com.rygital.randomgen.DimUtils;
 import com.rygital.randomgen.Rectangle;
+import com.rygital.randomgen.utils.ClickType;
 import com.rygital.randomgen.utils.Colors;
 import com.rygital.randomgen.utils.Materials;
 
@@ -132,7 +133,7 @@ public class GameArray {
     private void changeState(int i, int j) {
         if (i - 1 > 0) state(i - 1, j, i, j);
         if (i + 1 < columnCount - 1) state(i + 1, j, i, j);
-        if (j - 1 > 0) state(i,j - 1, i, j);
+        if (j - 1 > 0) state(i, j - 1, i, j);
         if (j + 1 < rowCount - 1) state(i, j + 1, i, j);
     }
 
@@ -192,6 +193,7 @@ public class GameArray {
     }
 
     public void touch(int x, int y, int action) {
+        ClickEvent clickEvent = App.instance.dimUtils.getClickedCell(y, x);
         Log.d("TAG", MotionEvent.actionToString(action));
         log(prevX, x, prevY, y);
         switch (action) {
@@ -201,19 +203,23 @@ public class GameArray {
                 break;
             }
             case MotionEvent.ACTION_MOVE: {
-                ClickEvent prevClickEvent = App.instance.dimUtils.getClickedCell(prevY, prevX);
-                ClickEvent clickEvent = App.instance.dimUtils.getClickedCell(y, x);
-                prevY = y;
-                prevX = x;
-                log(prevClickEvent.column, clickEvent.column, prevClickEvent.row, clickEvent.row);
-                createObjects(prevClickEvent.column, prevClickEvent.row, clickEvent.column, clickEvent.row);
+                if (clickEvent.clickType == ClickType.CREATE_MATERIAL_CLICK) {
+                    ClickEvent prevClickEvent = App.instance.dimUtils.getClickedCell(prevY, prevX);
+                    prevY = y;
+                    prevX = x;
+                    log(prevClickEvent.column, clickEvent.column, prevClickEvent.row, clickEvent.row);
+                    createObjects(prevClickEvent.column, prevClickEvent.row, clickEvent.column, clickEvent.row);
+                }
                 break;
             }
             case MotionEvent.ACTION_UP: {
-                ClickEvent prevClickEvent = App.instance.dimUtils.getClickedCell(prevY, prevX);
-                ClickEvent clickEvent = App.instance.dimUtils.getClickedCell(y, x);
-                log(prevClickEvent.column, clickEvent.column, prevClickEvent.row, clickEvent.row);
-                createObjects(prevClickEvent.column, prevClickEvent.row, clickEvent.column, clickEvent.row);
+                if (clickEvent.clickType == ClickType.CREATE_MATERIAL_CLICK) {
+                    ClickEvent prevClickEvent = App.instance.dimUtils.getClickedCell(prevY, prevX);
+                    log(prevClickEvent.column, clickEvent.column, prevClickEvent.row, clickEvent.row);
+                    createObjects(prevClickEvent.column, prevClickEvent.row, clickEvent.column, clickEvent.row);
+                } else {
+                    currentMaterialType = clickEvent.materialType;
+                }
                 break;
             }
         }
